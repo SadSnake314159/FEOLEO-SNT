@@ -1,0 +1,2 @@
+# Feature Extraction on Low-Earth Orbit Satellite Network Traces (FEOLEO-SNT)
+We will be using tsfresh to extract features from LEO Network Traces. In particular, we will be using the LENS dataset (https://github.com/clarkzjw/LENS). 

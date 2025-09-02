@@ -1,15 +1,16 @@
 # extract_features.py
 # This module contains a class which is used to extract features from a singular CSV file
 
-import pandas as pandas
+import pandas as pd
 from tsfresh import extract_features
+from tsfresh.feature_extraction import MinimalFCParameters
 
 class CSVFeatureExtractor:
 
     def __init__(self, csv_path: str, series_id: int = 1):
         """csv_path = filepath to the CSV in question, series-id = identifier for the time series"""
         self.csv_path = csv_path 
-        self.series_id 
+        self.series_id = series_id
         self.df = None
         self.long_df = None
         self.features = None
@@ -27,7 +28,7 @@ class CSVFeatureExtractor:
         # Melt dataframe to long format
         self.long_df = self.df.melt(
             id_vars = ["timestamp"],
-            var_name = "kind"
+            var_name = "kind",
             value_name = "value"
         )
 
@@ -42,11 +43,18 @@ class CSVFeatureExtractor:
             raise ValueError("Data not reshaped. Call reshape_for_tsfresh() first")
 
         self.features = extract_features(
-            self.long_df.
-            column_id = "id"
-            column_sort = "timestamp"
-            column_kind = "kind"
-            column_value = "value"
+            self.long_df,
+            column_id = "id",
+            column_sort = "timestamp",
+            column_kind = "kind",
+            column_value = "value",
+            default_fc_parameters=MinimalFCParameters()
         )
 
         return self.features
+
+if __name__ == "__main__":
+    experimental = CSVFeatureExtractor("sample_data/irtt-10ms-1h-2023-11-17-01-00-00.csv")
+    experimental.load_csv()
+    experimental.reshape_for_tsfresh()
+    print("Extracing Features:" + str(experimental.extract()))
